@@ -11,7 +11,7 @@ Crear una carpeta del proyecto y en la raiz de la carpeta creada
 
 
 
-# DOCKERFILE
+# DOCKER
 
 ## Construir la imagen
 ubicarse en la raiz del proyecto y ejecutar el siguiente comando con un nombre de la imagen 'username/imagename'
@@ -64,16 +64,27 @@ $ docker run -d -p 8888:5000 -v path_host_to_src:path_container_to_src --name co
 $ docker run -d -p 8888:5000 -v ~/code/python/docker/flask-docker:/usr/src/app --name containername username/imagename
 ```
 
+Iniciar uno o mas contenedores detenidos
+```
+$ docker start containername
+$ docker start containername1 containername2 containername3 ..
+```
+
+Reiniciar uno o mas contenedores detenidos
+```
+$ docker restart containername
+$ docker restart containername1 containername2 containername3 ..
+```
 
 ## Verificar el contenedor
-Ver ejecucion del contenedor
+Ver ejecucion del contenedor, lista los contenedores, usar el flag '-a' para listar los detenidos
 ```
-$ docker ps | grep 'containername'
+$ docker ps -a | grep 'containername'
 ```
 
 Ver los logs del contenedor, utilizar el flag '-f' para ver logs en vivo
 ```
-$ docker logs containername
+$ docker logs -f containername
 ```
 
 Conectarse a la terminal de un contenedor por el nombre del contenedor,  para salir del terminal ejecutar el comando 'exit'
@@ -83,6 +94,24 @@ $ docker exec -it containername bash
 Si al conectarse con el comando 'bash' no funciona, ejecutar con 'sh'. http://stackoverflow.com/questions/27959011/why-does-docker-say-it-cant-execute-bash
 ```
 $ docker exec -it containername sh
+```
+
+Mostrar los procesos ejecutandose en un contenedor, se puede adicionar las opciones de 'ps' como 'ax'
+```
+$ docker top containername
+$ docker top containername ax
+```
+
+Mostrar las estadisticas de uso de todos los contenedores (usando el flag '-a' para listar todos, ejecutandose y detenidos), un contenedor o lista de contenedores
+```
+$ docker stats -a
+$ docker stats containername
+$ docker stats containername1 containername2 containername3 ...
+```
+
+Mostrar el mapeo de un contenedor con la maquina host
+```
+$ docker port containername
 ```
 
 ## Detener y eliminar el contenedor
@@ -95,6 +124,11 @@ $ docker rm   containername
 Detener y eliminar el contenedor al mismo tiempo ('stop' and 'rm')
 ```
 $ docker rm -f containername
+```
+
+Eliminar la imagen
+```
+$ docker rmi username/imagename
 ```
 
 
@@ -118,9 +152,10 @@ Construir las imagenes segun configuracion del archivo compose
 $ docker-compose build
 ```
 
-Construir la imagen por nombre de servicio definido en el archivo compose
+Construir la imagen por nombre de servicio definido en el archivo compose o indicando varios servicios
 ```
 $ docker-compose build servicename
+$ docker-compose build servicename1 servicename2 servicename3 ...
 ```
 
 Verificar la imagen creada
@@ -139,10 +174,20 @@ Crear y ejecutar los contenedores indicados en el archivo compose, como demonio 
 $ docker-compose up -d
 ```
 
-Si los contenedores definidos en el archivo compose ya existen o los que fueron detenidos con el comando 'stop'. Starts existing containers for a service.
+Si los contenedores definidos en el archivo compose ya existen o los que fueron detenidos con el comando 'stop' o 'kill'. Starts existing containers for a service.
 Si no se especifica 'servicename' realiza la accion a todos los servicios definidos en el archivo compose
 ```
+$ docker-compose start
 $ docker-compose start servicename
+$ docker-compose start servicename1 servicename2 servicename3
+```
+
+Reiniciar todos los contenedores de los servicios detenidos o ejecutandose o indicando el servicio o servicios. If you make changes to your docker-compose.yml configuration these changes will not be reflected after running this command.
+Si no se especifica 'servicename' realiza la accion a todos los servicios definidos en el archivo compose
+```
+$ docker-compose restart
+$ docker-compose restart servicename
+$ docker-compose restart servicename1 servicename2 servicename3
 ```
 
 ## Verificar el contenedor
