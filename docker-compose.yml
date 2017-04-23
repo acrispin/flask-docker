@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+    flaskservice:
+        build: . # se usa '.' porque el dockerfile esta en la raiz del proyecto, si no se usa entonces la propiedad 'image' busca una imagen local o en el docker hub
+        image: acrispin/flaskdocker # con la propiedad 'build', esta propiedad se usa para dar nombre a la imagen, si no se usa docker le asigna un nombre a la imagen
+        container_name: flaskdocker # si no se usa docker le asigna un nombre al contenedor
+        command: python app.py # sobreescribe el comando por defecto para la ejecucion del contenedor
+        env_file: .env # indica el archivo de las variables de entorno
+        volumes: # para desarrollo, mantiene sincronizado las fuentes con la maquina host y el contenedor
+            - .:/usr/src/app
+        ports: # para enlazar o mapear los puertos de la maquina host y del contenedor, el primer puerto '8888' es de la maquina host
+            - "8888:5000"
+        # network_mode: "host" # Ejecutar el contenedor usando la red de la maquina host usando en vez de 'ports', no usar cuando se usa 'ports'
+        # logging:
+        #     - driver: none # para deshabilitar los logs se usa el valor 'none', valor por defecto es 'json-file'
